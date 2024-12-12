@@ -1,7 +1,7 @@
 package org.lialikov.adventofcode.adv2022;
 
 import org.lialikov.adventofcode.util.FileUtil;
-import org.lialikov.adventofcode.util.Position;
+import org.lialikov.adventofcode.model.Position;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -62,10 +62,10 @@ public class Adv2022Day9 {
         Position newHead = head;
         for (int i = 0; i < steps; i++) {
             switch (direction) {
-                case D -> newHead = new Position(newHead.x, newHead.y + 1);
-                case U -> newHead = new Position(newHead.x, newHead.y - 1);
-                case L -> newHead = new Position(newHead.x - 1, newHead.y);
-                case R -> newHead = new Position(newHead.x + 1, newHead.y);
+                case D -> newHead = new Position(newHead.x(), newHead.y() + 1);
+                case U -> newHead = new Position(newHead.x(), newHead.y() - 1);
+                case L -> newHead = new Position(newHead.x() - 1, newHead.y());
+                case R -> newHead = new Position(newHead.x() + 1, newHead.y());
                 default -> throw new IllegalStateException("Unexpected direction: " + direction);
             }
 
@@ -85,15 +85,15 @@ public class Adv2022Day9 {
     }
 
     private static void printGraph(Position newHead, List<Position> tails) {
-        int minX = newHead.x;
-        int maxX = newHead.x;
-        int minY = newHead.y;
-        int maxY = newHead.y;
+        int minX = newHead.x();
+        int maxX = newHead.x();
+        int minY = newHead.y();
+        int maxY = newHead.y();
         for (Position t : tails) {
-            minX = Math.min(minX, t.x);
-            maxX = Math.max(maxX, t.x);
-            minY = Math.min(minY, t.y);
-            maxY = Math.max(maxY, t.y);
+            minX = Math.min(minX, t.x());
+            maxX = Math.max(maxX, t.x());
+            minY = Math.min(minY, t.y());
+            maxY = Math.max(maxY, t.y());
         }
         for (int j = minY; j <= maxY; j++) {
             for (int i = minX; i <= maxX; i++) {
@@ -119,8 +119,8 @@ public class Adv2022Day9 {
     }
 
     private static Position getNewTail(Position newHead, Position currentTail) {
-        int xDiff = newHead.x - currentTail.x;
-        int yDiff = newHead.y - currentTail.y;
+        int xDiff = newHead.x() - currentTail.x();
+        int yDiff = newHead.y() - currentTail.y();
         int xDiffAbs = Math.abs(xDiff);
         int yDiffAbs = Math.abs(yDiff);
         if (xDiffAbs <= 1 && yDiffAbs <= 1) {
@@ -131,16 +131,16 @@ public class Adv2022Day9 {
         int stepY = yDiff > 0 ? 1 : -1;
         if (xDiffAbs == 2) {
             if (yDiffAbs == 0) {
-                return new Position(currentTail.x + stepX, currentTail.y);
+                return new Position(currentTail.x() + stepX, currentTail.y());
             } else {
-                return new Position(currentTail.x + stepX, currentTail.y + stepY);
+                return new Position(currentTail.x() + stepX, currentTail.y() + stepY);
             }
         }
         if (yDiffAbs == 2) {
             if (xDiffAbs == 0) {
-                return new Position(currentTail.x, currentTail.y + stepY);
+                return new Position(currentTail.x(), currentTail.y() + stepY);
             } else {
-                return new Position(currentTail.x + stepX, currentTail.y + stepY);
+                return new Position(currentTail.x() + stepX, currentTail.y() + stepY);
             }
         }
 

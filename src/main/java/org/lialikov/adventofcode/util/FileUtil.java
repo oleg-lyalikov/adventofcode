@@ -21,9 +21,22 @@ public class FileUtil {
         }
     }
 
+    public static List<String> readLines(String filename) {
+        try {
+            //noinspection DataFlowIssue
+            return Files.readAllLines(Paths.get(FileUtil.class.getResource("/" + filename).toURI()), StandardCharsets.UTF_8);
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static List<Character> toCharList(String str) {
         return str.chars()
                 .mapToObj(e -> (char) e)
                 .collect(Collectors.toList());
+    }
+
+    public static char[][] toCharArrays(String inputFile) {
+        return StringUtil.toCharArrays(readLines(inputFile));
     }
 }
