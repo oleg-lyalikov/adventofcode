@@ -38,4 +38,8 @@ public enum Direction {
             case W -> j - steps;
         };
     }
+
+    public Position nextP(Position p) {
+        return new Position(nextJ(p.x()), nextI(p.y()));
+    }
 }
