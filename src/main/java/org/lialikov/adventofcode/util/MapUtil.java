@@ -25,4 +25,18 @@ public class MapUtil {
             new Position(p.x(), p.y() - 1)
         );
     }
+
+    public static void print(char[][] map) {
+        print(map, 0, map[0].length - 1);
+    }
+
+    public static void print(char[][] map, int startJ, int endJ) {
+        for (char[] line : map) {
+            for (int j = startJ; j <= endJ; j++) {
+                System.out.print(line[j]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
 }
