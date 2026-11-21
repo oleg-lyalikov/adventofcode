@@ -1,12 +1,15 @@
 package org.lialikov.adventofcode.adv2023;
 
 import org.lialikov.adventofcode.model.Position;
+import org.lialikov.adventofcode.util.DataUtil;
 import org.lialikov.adventofcode.util.FileUtil;
-import org.lialikov.adventofcode.util.StringUtil;
+import org.lialikov.adventofcode.util.MapUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.lialikov.adventofcode.util.MapUtil.find;
 
 public class Adv2023Day21 {
 
@@ -20,224 +23,55 @@ public class Adv2023Day21 {
         // 3853
         //System.out.println(getPart1("2023/2023-12-21.txt", 64));
 
-        //Steps: 1, : 2
-        //Steps: 2, : 4
-        //Steps: 3, : 6
-        //Steps: 4, : 9
-        //Steps: 5, : 13
-        //Steps: 6, : 16
-        //Steps: 7, : 21
-        //Steps: 8, : 25
-        //Steps: 9, : 29
-        //Steps: 10, : 33
-        //Steps: 11, : 35
-        //Steps: 12, : 40
-        //Steps: 13, : 39
-        //Steps: 14, : 42
-        //Steps: 15, : 39
-        //Steps: 16, : 42
-//        for (int i = 1; i <= 16; i++) {
-//            System.out.println("Steps: " + i + ", : " + getPart1("2023/2023-12-21-sample.txt", i));
+//        for (int steps = 1; steps < 17; steps++) {
+//            System.out.println("Steps " + steps + ": " + getPart1("2023/2023-12-21-sample.txt", steps));
+//        }
+//        for (int steps = 1; steps < 17; steps++) {
+//            System.out.println("Steps " + steps + ": " + getPart2("2023/2023-12-21-sample.txt", steps));
 //        }
 
-//        for (int i = 1; i <= 50; i++) {
-//            System.out.println("Steps: " + i + ", : " + getPart2("2023/2023-12-21-sample.txt", i));
-//        }
+        // 16
+        //System.out.println(getPart2("2023/2023-12-21-sample.txt", 6));
+        // 50
+        //System.out.println(getPart2("2023/2023-12-21-sample.txt", 10));
+        // 1594
+        //System.out.println(getPart2("2023/2023-12-21-sample.txt", 50));
+        // 6536
+        //System.out.println(getPart2("2023/2023-12-21-sample.txt", 100));
+        // 167004
+        //System.out.println(getPart2("2023/2023-12-21-sample.txt", 500));
+        // 668697
+        //System.out.println(getPart2("2023/2023-12-21-sample.txt", 1000));
+        // 16733044
+        System.out.println(getPart2("2023/2023-12-21-sample.txt", 5000));
 
-//        for (int i = 1; i <= 4; i++) {
-//            System.out.println(getPart1("2023/2023-12-21-sample.txt", i));
-//            System.out.println(getPart2("2023/2023-12-21-sample.txt", i));
-//        }
+        // 42
+        //System.out.println(getPart2("2023/2023-12-21-sample.txt", 64));
+        // 3853
+        //System.out.println(getPart2("2023/2023-12-21.txt", 64));
 
-        //System.out.println(getPart1("2023/2023-12-21.txt", 26501365));
-
-        for (int i = 1; i <= 7; i++) {
-            System.out.println("Steps: " + i + ": " + getPart1("2023/2023-12-21-sample2.txt", i));
-        }
+        //System.out.println(getPart2("2023/2023-12-21.txt", 26501365));
 
         System.out.println(new Date());
     }
 
-    private static int getGardenCountAtDistance(char[][] map, Position start, int distance) {
-        int xPlus = (start.x() + distance) % map[0].length;
-        int xMinus = start.x() - distance;
-        if (xMinus < 0) {
-            xMinus = map[0].length - (Math.abs(xMinus) % map[0].length);
-        }
-        int yPlus = (start.y() + distance) % map.length;
-        int yMinus = start.y() - distance;
-        if (yMinus < 0) {
-            yMinus = map.length - (Math.abs(yMinus) % map.length);
-        }
-        int res = 0;
-        if (isValidGarden(map[yMinus][start.x()])) {
-            res++;
-        }
-        if (isValidGarden(map[yPlus][start.x()])) {
-            res++;
-        }
-        if (isValidGarden(map[start.y()][xPlus])) {
-            res++;
-        }
-        if (isValidGarden(map[start.y()][xMinus])) {
-            res++;
-        }
-        return res;
-    }
-
-    private static Map<Integer, Integer> byDistance(char[][] map, Position start, Integer printStep) {
-        Map<Integer, Integer> resMap = new HashMap<>();
-        int oddRes = 0;
-        int evenRes = 0;
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[0].length; j++) {
-                if (isValidGarden(map[i][j])) {
-                    int currentStep = Math.abs(start.x() - j) + Math.abs((start.y() - i));
-                    resMap.putIfAbsent(currentStep, 0);
-                    resMap.put(currentStep, resMap.get(currentStep) + 1);
-                    if (currentStep % 2 == 0) {
-                        evenRes++;
-                    } else {
-                        oddRes++;
-                    }
-                    if (printStep != null) {
-                        if (currentStep == printStep) {
-                            System.out.print('X');
-                        } else {
-                            if (i == start.y() && j == start.x()) {
-                                System.out.print('S');
-                            } else {
-                                System.out.print('.');
-                            }
-                        }
-                    }
-                } else {
-                    if (printStep != null) {
-                        System.out.print('#');
-                    }
-                }
-            }
-            if (printStep != null) {
-                System.out.println();
-            }
-        }
-        return resMap;
-    }
-
-    private static Map<Integer, Integer> byDistance2(char[][] map, Position start) {
-        Map<Integer, Integer> res = new HashMap<>();
-        for (int i = 0; i < map.length; i++) {
-            res.put(i, getGardenCountAtDistance(map, start, i));
-        }
-        return res;
-    }
-
-    private static long getPart2(String inputFile, int steps) {
-        char[][] map = StringUtil.toCharArrays(FileUtil.readLines(inputFile));
-        Position start = getStart(map);
-        char[][] map2 = doubleMap(map);
-        Position start2 = getStart(map2);
-        long[] extra = new long[map.length * 2 + 1];
-        extra[0] = 1;
-        for (int i = 1; i <= map.length * 2; i++) {
-            extra[i] = getPart1(map2, start2, i);
-            //System.out.println("Steps: " + i + ", : " + getPart1(map2, start2, i));
-        }
-        for (int i = 0; i < extra.length; i++) {
-            if (i % 2 == 0) {
-                System.out.print(extra[i] + ", ");
-            }
-        }
-        System.out.println();
-        for (int i = 0; i < extra.length; i++) {
-            if (i % 2 == 1) {
-                System.out.print(extra[i] + ", ");
-            }
-        }
-
-        Map<Integer, Integer> byDistanceMap = byDistance(map2, start2, 6);
-        Map<Integer, Integer> byDistance2Map = byDistance2(map2, start2);
-        long res = 0;
-        boolean isOdd = steps % 2 == 1;
-        long prev = 0;
-        for (int i = 1; i <= steps; i++) {
-            boolean isIterationOdd = i % 2 == 1;
-            if ((isOdd && isIterationOdd) || (!isOdd && !isIterationOdd)) {
-                if (i < extra.length) {
-                    //System.out.println("Diff: " + (extra[i - 1] - res));
-                    res = extra[i];
-                } else {
-                    res += prev;
-                }
-                prev = res;
-            }
-        }
-        return res;
-
-//        long res = 0;
-//        boolean isOdd = steps % 2 == 1;
-//        for (int i = 1; i <= steps; i++) {
-//            if ((isOdd && (i % 2 == 0)) || (!isOdd && (i % 2 == 1))) {
-//                continue;
-//            }
-//            res += getGardenCountAtDistance(map, start, i);
-//        }
-//        if (!isOdd) {
-//            res++;
-//        }
-//        return res;
-    }
-
     private static long getPart1(String inputFile, int steps) {
-        char[][] map = StringUtil.toCharArrays(FileUtil.readLines(inputFile));
-        Position start = getStart(map);
+        char[][] map = FileUtil.toCharArrays(inputFile);
+        Position start = find(map, 'S');
         return getPart1(map, start, steps);
     }
 
     private static long getPart1(char[][] map, Position start, int steps) {
-        //System.out.println("Garden points count: " + getGardenCount(map));
         Set<Position> next = Set.of(start);
         for (int i = 0; i < steps; i++) {
             next = next.stream()
                     .flatMap(p -> getNext(map, p).stream())
                     .collect(Collectors.toSet());
+        }
+        //if (steps % 2 == 1) {
             //print(map, next);
-            //System.out.println(next.size());
-//            if (i % 10000 == 0) {
-//                System.out.println("Step: " + i + ", date: " + new Date());
-//            }
-        }
-        print(map, next);
+        //}
         return next.size();
-    }
-    private static char[][] doubleMap(char[][] map) {
-        char[][] res = new char[map.length * 3][map[0].length * 3];
-        for (int i = 0; i < res.length; i++) {
-            for (int j = 0; j < res.length; j++) {
-                char current = map[i % map.length][j % map.length];
-                if (current == 'S' && i > map.length && i < map.length * 2 && j > map[0].length && j < map[0].length * 2) {
-                    res[i][j] = 'S';
-                } else if (current == '#') {
-                    res[i][j] = '#';
-                } else {
-                    res[i][j] = '.';
-                }
-            }
-        }
-        //print(res, Collections.emptySet());
-        return res;
-    }
-
-    private static int getGardenCount(char[][] map) {
-        int res = 0;
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == 'S' || map[i][j] == '.') {
-                    res++;
-                }
-            }
-        }
-        return res;
     }
 
     private static void print(char[][] map, Set<Position> positions) {
@@ -254,12 +88,9 @@ public class Adv2023Day21 {
     }
 
     private static List<Position> getNext(char[][] map, Position p) {
-        return Stream.of(
-                new Position(p.x() - 1, p.y()),
-                new Position(p.x() + 1, p.y()),
-                new Position(p.x(), p.y() - 1),
-                new Position(p.x(), p.y() + 1)
-        ).filter(pp -> isValidGarden(map, pp))
+        return MapUtil.streamNext(p)
+                .filter(pp -> DataUtil.isValid(pp, map))
+                .filter(pp -> isValidGarden(map[pp.y()][pp.x()]))
                 .collect(Collectors.toList());
     }
 
@@ -267,28 +98,116 @@ public class Adv2023Day21 {
         return ch == '.' || ch == 'S';
     }
 
-    private static boolean isValidGarden(char[][] map, Position p) {
-        if (p.x() < 0 || p.y() < 0) {
-            return false;
-        }
-        if (p.y() >= map.length) {
-            return false;
-        }
-        if (p.x() >= map[0].length) {
-            return false;
-        }
-        char element = map[p.y()][p.x()];
-        return isValidGarden(element);
+    private static long getPart2(String inputFile, int steps) {
+        char[][] map = FileUtil.toCharArrays(inputFile);
+        Position start = find(map, 'S');
+        return getPart2(map, start, steps);
     }
 
-    private static Position getStart(char[][] map) {
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == 'S') {
-                    return new Position(j, i);
+    private static char[][] doubleMap(char[][] map) {
+        char[][] res = new char[map.length * 3][map[0].length * 3];
+        for (int i = 0; i < res.length; i++) {
+            for (int j = 0; j < res.length; j++) {
+                char current = map[i % map.length][j % map.length];
+                if (current == 'S' && i > map.length && i < map.length * 2 && j > map[0].length && j < map[0].length * 2) {
+                    res[i][j] = 'S';
+                } else if (current == '#') {
+                    res[i][j] = '#';
+                } else {
+                    res[i][j] = '.';
                 }
             }
         }
-        throw new IllegalStateException("Cannot find start");
+        return res;
+    }
+
+    private static long getPart2(char[][] map, Position start, int steps) {
+        Set<Position> next = Set.of(start);
+        Set<Position> prevEven = new HashSet<>(next);
+        Set<Position> prevOdd = new HashSet<>();
+        Map<Position, Long> prevEvenCounts = new HashMap<>(Map.of(start, 1L));
+        Map<Position, Long> prevOddCount = new HashMap<>();
+        long evenSum = 1;
+        long oddSum = 0;
+        int mult = 500;
+        Map<Position, Integer> firstSteps = new HashMap<>(Map.of(start, 1));
+        Map<Position, Integer> secondSteps = new HashMap<>();
+        Map<Position, Long> allCounts = new HashMap<>(Map.of(start, 1L));
+        for (int i = 1; i <= steps; i++) {
+            boolean even = i % 2 == 0;
+            Set<Position> prev = even ? prevEven : prevOdd;
+            Map<Position, Long> prevCounts = even ? prevEvenCounts : prevOddCount;
+            next = next.stream()
+                    .flatMap(p -> getNextFiltered(map, p, prev))
+                    .collect(Collectors.toSet());
+//            Iterator<Position> it = next.iterator();
+//            while (it.hasNext()) {
+//                Position ip = it.next();
+//                Position casted = cast(map, ip, mult);
+//                Position key = ip.equals(casted) ? ip : casted;
+//                if (key != ip) {
+//                    it.remove();
+//                }
+//                long v = prevCounts.computeIfAbsent(key, pp -> 0L);
+//                prevCounts.put(key, v + 1);
+//            }
+            int finalI = i;
+            next.forEach(n -> {
+                Position casted = cast(map, n, 1);
+                if (!firstSteps.containsKey(casted)) {
+                    firstSteps.computeIfAbsent(casted, nn -> finalI);
+                } else {
+                    secondSteps.computeIfAbsent(casted, nn -> finalI);
+                }
+                long v = allCounts.computeIfAbsent(casted, nn -> 0L);
+                allCounts.put(casted, v + 1);
+            });
+
+            if (even) {
+                evenSum += next.size();
+            } else {
+                oddSum += next.size();
+            }
+
+            if (even) {
+                prevEven = next;
+            } else {
+                prevOdd = next;
+            }
+
+            //print(map, next);
+            System.out.println("Steps " + i + ": " + ((i % 2 == 0) ? evenSum : oddSum));
+        }
+        //if (steps % 2 == 1) {
+        //print(map, next);
+        //}
+        Map<Position, Long> counts = (steps % 2 == 0) ? prevEvenCounts : prevOddCount;
+        //return counts.values().stream().mapToLong(aLong -> aLong).sum();
+        return (steps % 2 == 0) ? evenSum : oddSum;
+    }
+
+    private static Stream<Position> getNextFiltered(char[][] map, Position p, Set<Position> filter) {
+        return MapUtil.streamNext(p)
+                .filter(pp -> !filter.contains(pp))
+                .filter(pp -> isValidGarden2(map, pp));
+    }
+
+    private static Position cast(char[][] map, Position p, int mult) {
+        int xMax = map[0].length * mult;
+        int x = p.x() % xMax;
+        if (x < 0) {
+            x += xMax;
+        }
+        int yMax = map.length * mult;
+        int y = p.y() % yMax;
+        if (y < 0) {
+            y += yMax;
+        }
+        return new Position(x, y);
+    }
+
+    private static boolean isValidGarden2(char[][] map, Position p) {
+        Position casted = cast(map, p, 1);
+        return isValidGarden(map[casted.y()][casted.x()]);
     }
 }
